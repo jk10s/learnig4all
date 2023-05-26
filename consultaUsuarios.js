@@ -5,7 +5,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '123456',
-    database: 'learning4all'
+    database: 'learning'
 });
 
 // Ejecutar la consulta

@@ -1,1 +1,0 @@
-# learnig4all

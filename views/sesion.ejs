@@ -27,7 +27,7 @@
 
   <!-- Template Main CSS File -->
   <link href="/css/style.css" rel="stylesheet">
-
+  
 
 </head>
 
@@ -56,45 +56,49 @@
   </header><!-- End Header -->
 
 
-
   <main id="main">
 
     <!-- ======= Breadcrumbs ======= -->
     <div class="breadcrumbs" data-aos="fade-in">
       <div class="container">
-        <h2>Iniciar sesion</h2>
-        <p>Est dolorum ut non facere possimus quibusdam eligendi voluptatem. Quia id aut similique quia voluptas sit quaerat debitis. Rerum omnis ipsam aperiam consequatur laboriosam nemo harum praesentium. </p>
+        <h2>Iniciar sesión</h2>
+        <p>i </p>
       </div>
     </div><!-- End Breadcrumbs -->
-
+  
     <!-- ======= Events Section ======= -->
     <section style="background-color: #f8f9fa; padding: 80px 0;">
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
-            <h2 style="color: #0b245a; font-size: 36px; font-weight: bold; margin-bottom: 5rem;">Iniciar sesión en Learnig<span style="color: #e63946;">4</span>All</h2>
+            <h2 style="color: #0b245a; font-size: 36px; font-weight: bold; margin-bottom: 5rem;">Iniciar sesión en Learning<span style="color: #e63946;">4</span>All</h2>
           </div>
         </div>
         <div class="row">
+          <% if (mensajeError) { %>
+            <p style="color: #e63946;"><%= mensajeError %></p>
+          <% } %>
           <div class="col-lg-6 offset-lg-3">
             <form method="POST" action="/iniciar-sesion">
-              <label for="email">Email:</label>
-              <input type="email" id="email" name="email" required><br>
-          
-              <label for="password">Contraseña:</label>
-              <input type="password" id="password" name="password" required><br>
-          
-              <button type="submit">Iniciar sesión</button>
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Iniciar sesión</button>
             </form>
           </div>
         </div>
       </div>
     </section>
-    
-    
-
+  
   </main><!-- End #main -->
+  
 
+  
   <footer id="footer">
 
     <div class="footer-top">
