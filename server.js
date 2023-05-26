@@ -98,7 +98,10 @@ app.post('/iniciar-sesion', (req, res) => {
 
 // Ruta para agregar un nuevo curso
 app.post('/cursos/agregar', (req, res) => {
-    const { nombre, descripcion } = req.body;
+    const {
+        nombre,
+        descripcion
+    } = req.body;
 
     const query = 'INSERT INTO cursos (nombre, descripcion) VALUES (?, ?)';
     const values = [nombre, descripcion];
@@ -137,10 +140,10 @@ app.get('/cursos', (req, res) => {
 app.get('/perfil', (req, res) => {
     // Verificar si el usuario está autenticado
     if (req.session.nombreUsuario) {
-        // Obtener el correo del usuario de la sesión
+        // Obtener el email del usuario de la sesión
         const correoUsuario = req.session.correoUsuario;
         // Realizar una consulta a la base de datos para obtener la información del usuario
-        const query = 'SELECT * FROM usuarios WHERE correo = ?';
+        const query = 'SELECT * FROM usuarios WHERE email = ?';
         connection.query(query, [correoUsuario], (error, results) => {
             if (error) {
                 throw error;
@@ -157,10 +160,116 @@ app.get('/perfil', (req, res) => {
 });
 
 // Ruta para administrar estudiantes
+// Ruta para administrar estudiantes
 app.get('/administrar-estudiantes', (req, res) => {
-    // Lógica para renderizar la página "Administrar Estudiantes"
-    res.render('administrar_estudiantes'); // Renderiza el archivo HTML correspondiente
+    const query = 'SELECT * FROM usuarios';
+    connection.query(query, (error, results) => {
+        if (error) {
+            console.error('Error al obtener los usuarios:', error);
+            res.status(500).send('Error al obtener los usuarios.');
+        } else {
+            res.render('administrar_estudiantes', {
+                usuarios: results
+            });
+        }
+    });
 });
+
+// Ruta para eliminar un estudiante
+app.get('/estudiantes/eliminar/:id', (req, res) => {
+    const estudianteId = req.params.id;
+
+    const query = 'DELETE FROM usuarios WHERE id = ?';
+    const values = [estudianteId];
+
+    connection.query(query, values, (error, results) => {
+        if (error) {
+            console.error('Error al eliminar el estudiante:', error);
+            res.send('Error al eliminar el estudiante.');
+        } else {
+            console.log('Estudiante eliminado exitosamente.');
+
+            // Mostrar el mensaje de éxito utilizando SweetAlert y redirigir a la página de administrar estudiantes
+            const successMessage = encodeURIComponent('Estudiante eliminado exitosamente.');
+            const redirectURL = '/administrar-estudiantes' + '?mensaje=' + successMessage;
+            res.redirect(redirectURL);
+        }
+    });
+});
+
+
+// Ruta para editar un estudiante (GET)
+// Ruta para editar un estudiante (POST)
+app.post('/estudiantes/editar/:id', (req, res) => {
+    const estudianteId = req.params.id;
+    const { nombre, email, password, tipo } = req.body;
+
+    const query = 'UPDATE usuarios SET nombre = ?, email = ?, password = ?, tipo = ? WHERE id = ?';
+    const values = [nombre, email, password, tipo, estudianteId];
+
+    connection.query(query, values, (error, results) => {
+        if (error) {
+            console.error('Error al editar el estudiante:', error);
+            res.send('Error al editar el estudiante.');
+        } else {
+            console.log('Estudiante editado exitosamente.');
+
+            // Mostrar el mensaje de éxito utilizando SweetAlert y redirigir a la página de administrar estudiantes
+            const successMessage = encodeURIComponent('Estudiante editado exitosamente.');
+            const redirectURL = '/administrar-estudiantes' + '?mensaje=' + successMessage;
+            res.redirect(redirectURL);
+        }
+    });
+});
+
+
+
+app.post('/usuarios/editar/:id', (req, res) => {
+    const usuarioId = req.params.id;
+    const { nombre, email } = req.body;
+
+    const query = 'UPDATE usuarios SET nombre = ?, email = ? WHERE id = ?';
+    const values = [nombre, email, usuarioId];
+
+    connection.query(query, values, (error, results) => {
+        if (error) {
+            console.error('Error al editar el usuario:', error);
+            res.status(500).send('Error al editar el usuario.');
+        } else {
+            // Redireccionar al listado de usuarios o mostrar un mensaje de éxito
+            res.redirect('/usuarios');
+        }
+    });
+});
+
+
+
+
+// Ruta para editar un estudiante (POST)
+app.post('/estudiantes/editar/:id', (req, res) => {
+    const estudianteId = req.params.id;
+    const { nombre, email, password } = req.body;
+
+    const query = 'UPDATE usuarios SET nombre = ?, email = ?, password = ? WHERE id = ?';
+    const values = [nombre, email, password, estudianteId];
+
+    connection.query(query, values, (error, results) => {
+        if (error) {
+            console.error('Error al editar el estudiante:', error);
+            res.send('Error al editar el estudiante.');
+        } else {
+            console.log('Estudiante editado exitosamente.');
+
+            // Mostrar el mensaje de éxito utilizando SweetAlert y redirigir a la página de administrar estudiantes
+            const successMessage = encodeURIComponent('Estudiante editado exitosamente.');
+            const redirectURL = '/administrar-estudiantes' + '?mensaje=' + successMessage;
+            res.redirect(redirectURL);
+        }
+    });
+});
+
+
+
 
 // Ruta para administrar cursos
 app.get('/administrar-cursos', (req, res) => {
@@ -209,7 +318,10 @@ app.get('/cursos/editar/:id', (req, res) => {
 // Ruta para editar un curso (POST)
 app.post('/cursos/editar/:id', (req, res) => {
     const courseId = req.params.id;
-    const { nombre, descripcion } = req.body;
+    const {
+        nombre,
+        descripcion
+    } = req.body;
 
     const query = 'UPDATE cursos SET nombre = ?, descripcion = ? WHERE id = ?';
     const values = [nombre, descripcion, courseId];
@@ -223,7 +335,11 @@ app.post('/cursos/editar/:id', (req, res) => {
 
             // Mostrar el mensaje de éxito utilizando SweetAlert
             res.render('editar_curso', {
-                curso: { id: courseId, nombre, descripcion },
+                curso: {
+                    id: courseId,
+                    nombre,
+                    descripcion
+                },
                 mensaje: 'Curso editado exitosamente.'
             }, (err, html) => {
                 if (err) {
